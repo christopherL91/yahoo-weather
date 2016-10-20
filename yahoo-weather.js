@@ -2,6 +2,8 @@
 
 var https = require('https');
 
+const DEBUG = process.env.NODE_ENV === 'development';
+
 var YahooWeather = function(){}
 
 /*
@@ -143,10 +145,8 @@ var getWeather = function (location) {
 				response( result );
 			});
 		});
-	
-	});
 
-	
+	});
 }
 
 // input: location (for example "gainesville, fl")
@@ -162,13 +162,13 @@ YahooWeather.prototype.getFullWeather = function (location) {
 YahooWeather.prototype.getSimpleWeather = function (location) {
 	return new Promise( function(response,reject){
 		getWeather(location).then( function(yw){
-			console.log('yw: ' + yw);
+			if(DEBUG) console.log('yw: ' + yw);
 			var ans = {};
 			try {
 				// try to shorten the calls
 				var gen = yw.query.results.channel;
 				var info = yw.query.results.channel.item;
-		
+
 				ans.date = info.condition.date;
 				ans.location = {lat: info.lat, long: info.long};
 				ans.weather = {	temperature: {value: info.condition.temp, units: gen.units.temperature},
@@ -177,10 +177,10 @@ YahooWeather.prototype.getSimpleWeather = function (location) {
 								condition: info.condition.text
 							  };
 				ans.forecast = info.forecast;
-				console.log('ans: '+ans);
+				if(DEBUG) console.log('ans: '+ans);
 				response(ans);
 			} catch(err){
-				console.log(err);
+				if(DEBUG) console.log(err);
 			}
 		});
 	});
