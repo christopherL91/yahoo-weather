@@ -2,8 +2,6 @@
 
 var https = require('https');
 
-const DEBUG = process.env.NODE_ENV === 'development';
-
 var YahooWeather = function(){}
 
 /*
@@ -162,7 +160,6 @@ YahooWeather.prototype.getFullWeather = function (location) {
 YahooWeather.prototype.getSimpleWeather = function (location) {
 	return new Promise( function(response,reject){
 		getWeather(location).then( function(yw){
-			if(DEBUG) console.log('yw: ' + yw);
 			var ans = {};
 			try {
 				// try to shorten the calls
@@ -177,10 +174,8 @@ YahooWeather.prototype.getSimpleWeather = function (location) {
 								condition: info.condition.text
 							  };
 				ans.forecast = info.forecast;
-				if(DEBUG) console.log('ans: '+ans);
 				response(ans);
 			} catch(err){
-				if(DEBUG) console.log(err);
 			}
 		});
 	});
